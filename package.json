@@ -21,12 +21,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kualar/bridge.git"
+    "url": "https://github.com/Kualarz/bridge.git"
   },
   "bugs": {
-    "url": "https://github.com/Kualar/bridge/issues"
+    "url": "https://github.com/Kualarz/bridge/issues"
   },
-  "homepage": "https://github.com/Kualar/bridge#readme",
+  "homepage": "https://github.com/Kualarz/bridge#readme",
   "engines": {
     "node": ">=20"
   },

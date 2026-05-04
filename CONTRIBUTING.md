@@ -9,7 +9,7 @@ Thanks for considering a contribution. Bridge is in early days — feedback on a
 If you've never set up a Node project on Windows, see [INSTALL.md](./INSTALL.md) for the full walkthrough.
 
 ```bash
-git clone https://github.com/Kualar/bridge.git
+git clone https://github.com/Kualarz/bridge.git
 cd bridge
 npm install
 npm run build

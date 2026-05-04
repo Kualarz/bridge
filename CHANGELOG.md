@@ -24,5 +24,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Claude Code skill (`claude-skill/bridge/SKILL.md`) for automated brief pickup
 - Cross-platform data directory default (`~/Bridge`)
 
-[Unreleased]: https://github.com/Kualar/bridge/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/Kualar/bridge/releases/tag/v0.1.0
+[Unreleased]: https://github.com/Kualarz/bridge/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Kualarz/bridge/releases/tag/v0.1.0

@@ -1,6 +1,6 @@
 # Bridge
 
-[![CI](https://github.com/Kualar/bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/Kualar/bridge/actions/workflows/ci.yml)
+[![CI](https://github.com/Kualarz/bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/Kualarz/bridge/actions/workflows/ci.yml)
 
 > Hand off tasks from Claude.ai chat to Claude Code, automatically.
 
@@ -55,7 +55,7 @@ New to npm or terminals? See [INSTALL.md](./INSTALL.md) for a step-by-step walkt
 1. **Clone the repo.**
 
    ```bash
-   git clone https://github.com/Kualar/bridge.git
+   git clone https://github.com/Kualarz/bridge.git
    cd bridge
    ```
 

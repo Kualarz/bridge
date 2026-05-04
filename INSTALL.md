@@ -5,7 +5,7 @@ Three paths through this doc. If you're comfortable with npm, git, and a termina
 ## Fast path (you know npm and git)
 
 ```bash
-git clone https://github.com/Kualar/bridge.git
+git clone https://github.com/Kualarz/bridge.git
 cd bridge
 npm install
 npm run build
@@ -64,7 +64,7 @@ If you see an error like `'node' is not recognized`, close PowerShell, open a ne
 ### 4. Download bridge
 
 1. In PowerShell, run `cd $HOME\Documents` to move into your Documents folder.
-2. Run `git clone https://github.com/Kualar/bridge.git`. Git downloads the code; you'll see progress lines, then a "done" message.
+2. Run `git clone https://github.com/Kualarz/bridge.git`. Git downloads the code; you'll see progress lines, then a "done" message.
 3. Run `cd bridge` to step into the new folder. Your prompt should now end in `\bridge>`.
 
 ### 5. Install bridge's dependencies
@@ -172,7 +172,7 @@ It should show `https://registry.npmjs.org/`. If it shows something else, a prev
 node --version
 ```
 
-If it shows v18 or earlier, reinstall from [nodejs.org](https://nodejs.org) and pick the LTS version (20 or 22). If you already have the right version and the build still fails, that's a real bug — file an issue at [https://github.com/Kualar/bridge/issues](https://github.com/Kualar/bridge/issues) with the full `npm run build` output.
+If it shows v18 or earlier, reinstall from [nodejs.org](https://nodejs.org) and pick the LTS version (20 or 22). If you already have the right version and the build still fails, that's a real bug — file an issue at [https://github.com/Kualarz/bridge/issues](https://github.com/Kualarz/bridge/issues) with the full `npm run build` output.
 
 ### `npm start` fails immediately with EADDRINUSE
 
@@ -190,7 +190,7 @@ If it shows v18 or earlier, reinstall from [nodejs.org](https://nodejs.org) and 
 
 ```powershell
 Remove-Item -Recurse -Force .\bridge
-git clone https://github.com/Kualar/bridge.git
+git clone https://github.com/Kualarz/bridge.git
 cd bridge
 npm install
 npm run build
