@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment & secrets
+.env
+.env.local
+*.key
+
+# Claude Code per-user settings (contains user-specific paths and permissions)
+.claude/settings.local.json
+
+# Defensive: ignore any local database files (bridge no longer uses SQLite, but harmless to keep)
+data/
+.bridge/
+*.db
+*.db-journal
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Testing & coverage
+coverage/
+.nyc_output/

@@ -1,0 +1,47 @@
+{
+  "name": "bridge",
+  "version": "0.1.0",
+  "description": "A local daemon connecting Claude.ai to Claude Code via shared context.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "bridge": "./dist/index.js"
+  },
+  "scripts": {
+    "bridge": "tsx src/index.ts",
+    "bridge:stdio": "tsx src/mcp-stdio.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["claude", "mcp", "claude-code", "ai-tools", "task-handoff", "model-context-protocol"],
+  "author": "Kualar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kualar/bridge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Kualar/bridge/issues"
+  },
+  "homepage": "https://github.com/Kualar/bridge#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.90.0",
+    "@modelcontextprotocol/sdk": "^1.20.2",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
+  }
+}
