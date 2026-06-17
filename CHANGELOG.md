@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- macOS and Linux support: `src/config.ts` now picks a platform-appropriate data directory — `~/Library/Application Support/bridge` on macOS, `$XDG_DATA_HOME/bridge` (falling back to `~/.local/share/bridge`) on Linux, and `~/Bridge` on Windows.
+- Exported `platformDataDir(platform, home, xdgDataHome?)` helper for testable platform detection without process mutation.
+- CI matrix now runs on `macos-latest` in addition to `ubuntu-latest` across Node 20 and 22.
+- Tests for all three platform branches of `platformDataDir`.
+
+### Changed
+- README updated with cross-platform install instructions, Mac and Linux path examples, and platform-specific troubleshooting commands.
+- `.env.example` updated with platform-conditional path examples.
+
 ## [0.1.0] - 2026-05-04
 
 ### Added

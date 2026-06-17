@@ -23,6 +23,25 @@ export interface BridgeConfig {
 
 let deprecationWarned = false;
 
+/**
+ * Returns the idiomatic per-user data directory for bridge on the given platform.
+ * Accepts explicit arguments so callers can test any platform without monkey-patching globals.
+ */
+export function platformDataDir(
+  platform: NodeJS.Platform = process.platform,
+  home: string = os.homedir(),
+  xdgDataHome: string | undefined = process.env.XDG_DATA_HOME,
+): string {
+  switch (platform) {
+    case 'darwin':
+      return path.join(home, 'Library', 'Application Support', 'bridge');
+    case 'win32':
+      return path.join(home, 'Bridge');
+    default:
+      return path.join(xdgDataHome ?? path.join(home, '.local', 'share'), 'bridge');
+  }
+}
+
 export function loadConfig(): BridgeConfig {
   return {
     dataDir: resolveDataDir(),
@@ -48,8 +67,7 @@ function resolveDataDir(): string {
     return driveDirEnv;
   }
 
-  // Default: a local folder in the user's home directory. Storage-backend-agnostic.
-  return path.join(os.homedir(), 'Bridge');
+  return platformDataDir();
 }
 
 function resolvePort(): number {
