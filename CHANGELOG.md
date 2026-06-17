@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0] - 2026-06-17
 
 ### Added
 - macOS and Linux support: `src/config.ts` now picks a platform-appropriate data directory — `~/Library/Application Support/bridge` on macOS, `$XDG_DATA_HOME/bridge` (falling back to `~/.local/share/bridge`) on Linux, and `~/Bridge` on Windows.
@@ -15,7 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - README updated with cross-platform install instructions, Mac and Linux path examples, and platform-specific troubleshooting commands.
+- INSTALL.md updated with a macOS step-by-step section (Homebrew → node/git → clone → build → run); Windows section retitled for clarity.
 - `.env.example` updated with platform-conditional path examples.
+
+> **Testing note:** macOS has been manually verified. Linux path logic is covered by the new unit tests and the `ubuntu-latest` CI runner, but has not been tested end-to-end on a real Linux machine. If you run into issues on Linux, please open an issue.
 
 ## [0.1.0] - 2026-05-04
 
@@ -34,5 +37,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Claude Code skill (`claude-skill/bridge/SKILL.md`) for automated brief pickup
 - Cross-platform data directory default (`~/Bridge`)
 
-[Unreleased]: https://github.com/Kualarz/bridge/compare/v0.1.0...HEAD
+[0.2.0]: https://github.com/Kualarz/bridge/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Kualarz/bridge/releases/tag/v0.1.0
