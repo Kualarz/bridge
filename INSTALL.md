@@ -12,17 +12,17 @@ npm run build
 npm start
 ```
 
-Success looks like this banner:
+Success looks like this banner (paths shown are macOS defaults):
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   bridge — daemon online
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Root:       C:\Users\YourName\Documents\bridge
+  Root:       ~/Documents/bridge
   Port:       7777
   MCP:        http://localhost:7777/mcp
   Health:     http://localhost:7777/health
-  Storage:    C:\Users\YourName\Bridge
+  Storage:    ~/Library/Application Support/bridge
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Press Ctrl+C to stop.
@@ -30,7 +30,83 @@ Press Ctrl+C to stop.
 
 Verify by opening http://localhost:7777/health in any browser — you should see JSON with `"status": "ok"`. For the chat-to-Code workflow, see the Connecting Claude clients and Tailscale Funnel setup sections in the README.
 
-## Step-by-step (new to this)
+## macOS step-by-step
+
+### What you're installing
+
+Bridge is a small program that runs on your Mac and lets Claude.ai chat hand off tasks to Claude Code. When you finish planning something in a chat conversation, bridge carries the decisions over to Code automatically — no copy-pasting, no reformatting.
+
+You need two things: Node.js (the runtime that runs bridge) and git (to download the code). Both are easiest to get via Homebrew, the standard macOS package manager. Total install time: 5–10 minutes the first time, 60 seconds every time after.
+
+### 1. Install Homebrew (if you don't have it)
+
+Open **Terminal** (press `⌘ Space`, type `Terminal`, press Enter). Paste this command and press Enter:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+Follow the prompts. When it finishes, close Terminal and open a fresh one.
+
+### 2. Install Node.js and Git
+
+```bash
+brew install node git
+```
+
+Verify:
+
+```bash
+node --version   # should print v20.x.x or v22.x.x
+git --version    # should print git version 2.x.x
+```
+
+### 3. Download bridge
+
+```bash
+cd ~/Documents
+git clone https://github.com/Kualarz/bridge.git
+cd bridge
+```
+
+### 4. Install dependencies and build
+
+```bash
+npm install
+npm run build
+```
+
+No output from `npm run build` means success.
+
+### 5. Configure storage (optional)
+
+Bridge stores briefs and results in `~/Library/Application Support/bridge` by default. If you want to sync briefs between devices, point `BRIDGE_DATA_DIR` at a cloud-synced folder. Create a `.env` file:
+
+```bash
+# iCloud Drive
+echo 'BRIDGE_DATA_DIR=~/Library/Mobile Documents/com~apple~CloudDocs/bridge' > .env
+
+# or Google Drive (adjust the email address)
+# echo 'BRIDGE_DATA_DIR=~/Library/CloudStorage/GoogleDrive-you@example.com/My Drive/bridge' > .env
+```
+
+Most people skip this on the first try and add it later.
+
+### 6. Start bridge
+
+```bash
+npm start
+```
+
+You should see the daemon banner with your Mac's paths. Leave Terminal open — closing it stops bridge. Verify by opening http://localhost:7777/health in a browser.
+
+### 7. What's next
+
+- Configure Claude Code to talk to bridge — see the README's [Connecting Claude clients → Claude Code](./README.md#claude-code-cli) section.
+- Set up Tailscale Funnel so Claude.ai chat can reach bridge — see the README's [Tailscale Funnel setup](./README.md#tailscale-funnel-setup) section.
+- Install the bridge skill so Code picks up briefs automatically — see the README's [Installing the bridge skill](./README.md#installing-the-bridge-skill) section.
+
+## Windows step-by-step
 
 ### What you're installing
 
@@ -85,21 +161,7 @@ Replace the path with wherever your cloud sync folder is. Most people skip this 
 ### 7. Start bridge
 
 1. Run `npm start`.
-2. You should see the daemon banner:
-
-   ```
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     bridge — daemon online
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     Root:       C:\Users\YourName\Documents\bridge
-     Port:       7777
-     MCP:        http://localhost:7777/mcp
-     Health:     http://localhost:7777/health
-     Storage:    C:\Users\YourName\Bridge
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-   Press Ctrl+C to stop.
-   ```
+2. You should see the daemon banner with your Windows paths (e.g. `C:\Users\YourName\Documents\bridge` and `C:\Users\YourName\Bridge`).
 
 3. Bridge is now running. Leave this PowerShell window open — closing it stops bridge.
 4. Verify by opening http://localhost:7777/health in any browser. You should see JSON with `"status": "ok"`. If you do, bridge is running correctly.

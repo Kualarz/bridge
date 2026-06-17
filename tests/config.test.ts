@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { loadConfig, _resetDeprecationWarnedForTests } from '../src/config.js';
+import { loadConfig, platformDataDir, _resetDeprecationWarnedForTests } from '../src/config.js';
 
 const ALL_KEYS = [
   'BRIDGE_DATA_DIR',
@@ -41,7 +41,7 @@ describe('config', () => {
 
   it('returns defaults when no env vars are set', () => {
     const cfg = loadConfig();
-    expect(cfg.dataDir).toBe(path.join(os.homedir(), 'Bridge'));
+    expect(cfg.dataDir).toBe(platformDataDir());
     expect(cfg.port).toBe(7777);
     expect(cfg.projectRoot).toBe(process.cwd());
     expect(cfg.projectPaths).toEqual({});
@@ -92,5 +92,31 @@ describe('config', () => {
     process.env.BRIDGE_PROJECT_PATHS = '{"foo":"/abs/foo","bar":"/abs/bar"}';
     const cfg = loadConfig();
     expect(cfg.projectPaths).toEqual({ foo: '/abs/foo', bar: '/abs/bar' });
+  });
+});
+
+describe('platformDataDir', () => {
+  it('returns ~/Library/Application Support/bridge on darwin', () => {
+    expect(platformDataDir('darwin', '/Users/alice')).toBe(
+      '/Users/alice/Library/Application Support/bridge',
+    );
+  });
+
+  it('returns ~/Bridge on win32', () => {
+    expect(platformDataDir('win32', 'C:\\Users\\alice')).toBe(
+      path.join('C:\\Users\\alice', 'Bridge'),
+    );
+  });
+
+  it('uses XDG_DATA_HOME when set on linux', () => {
+    expect(platformDataDir('linux', '/home/alice', '/custom/xdg')).toBe(
+      '/custom/xdg/bridge',
+    );
+  });
+
+  it('falls back to ~/.local/share/bridge on linux when XDG_DATA_HOME is unset', () => {
+    expect(platformDataDir('linux', '/home/alice', undefined)).toBe(
+      '/home/alice/.local/share/bridge',
+    );
   });
 });

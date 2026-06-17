@@ -44,7 +44,9 @@ Chat calls `bridge_send_brief` to drop a markdown file into `inbox/`. Code calls
 - **Node.js 20 or newer** (tested on 20 and 22).
 - **npm** (bundled with Node).
 - **A Tailscale account** (the free tier works for personal use).
-- **Windows 10 or 11.** Mac and Linux are not yet officially supported, but contributions are very welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md).
+- **Windows 10+, macOS 12+, or Linux** are all supported.
+
+> **Installing Node.js:** On macOS, the easiest path is Homebrew — `brew install node`. On Windows, use the installer from [nodejs.org](https://nodejs.org). On Linux, use your distro's package manager (`apt install nodejs npm`, `dnf install nodejs`, etc.).
 
 > **Why Tailscale?** Bridge runs as a local HTTP daemon on `localhost:7777`. For the chat-to-Code workflow, both Claude.ai (web/mobile) and Claude Desktop need a public HTTPS endpoint to reach the daemon — they cannot connect to your machine's localhost directly. Tailscale Funnel gives you a stable HTTPS URL routed to your PC. **If you only use Claude Code locally on the same machine, you can run bridge in stdio mode and skip Tailscale entirely** — see the [Local-only mode](#local-only-mode-no-tailscale) footnote at the bottom.
 
@@ -91,15 +93,17 @@ New to npm or terminals? See [INSTALL.md](./INSTALL.md) for a step-by-step walkt
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      bridge — daemon online
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     Root:       C:\Users\YourName\Documents\bridge
+     Root:       ~/Documents/bridge
      Port:       7777
      MCP:        http://localhost:7777/mcp
      Health:     http://localhost:7777/health
-     Storage:    C:\Users\YourName\Bridge
+     Storage:    ~/Library/Application Support/bridge
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
    Press Ctrl+C to stop.
    ```
+
+   The Storage path shown is the macOS default. Linux shows `~/.local/share/bridge`; Windows shows `~/Bridge`.
 
 6. **Verify it's working.** Open http://localhost:7777/health in a browser. You should see JSON like:
 
@@ -115,7 +119,7 @@ Bridge reads its configuration from environment variables. All have defaults —
 
 | Variable               | Default                                | Purpose                                                                                                              |
 |------------------------|----------------------------------------|----------------------------------------------------------------------------------------------------------------------|
-| `BRIDGE_DATA_DIR`      | `~/Bridge` (`%USERPROFILE%\Bridge`)    | Where briefs and results are stored. Point at a cloud-synced folder for multi-device sync.                          |
+| `BRIDGE_DATA_DIR`      | macOS: `~/Library/Application Support/bridge`<br>Linux: `~/.local/share/bridge`<br>Windows: `~/Bridge` | Where briefs and results are stored. Point at a cloud-synced folder for multi-device sync. |
 | `BRIDGE_PORT`          | `7777`                                 | TCP port the HTTP daemon listens on.                                                                                |
 | `BRIDGE_PROJECT_ROOT`  | `process.cwd()`                        | Project root used by `bridge_review` when reading files. Mainly relevant for the stdio entrypoint.                  |
 | `BRIDGE_PROJECT_PATHS` | `{}` (empty JSON object)               | Map of project name → absolute path. Lets `bridge_review` find files for projects other than the daemon's cwd.      |
@@ -130,24 +134,32 @@ Bridge writes plain markdown files to whatever folder `BRIDGE_DATA_DIR` points a
 For multi-device access (e.g. plan briefs from chat on your phone, run Code on your PC), point `BRIDGE_DATA_DIR` at a cloud-synced folder. Google Drive, Dropbox, OneDrive, and iCloud all work. Bridge doesn't talk to those services directly — it just reads and writes files, and your cloud sync client handles propagation.
 
 ```bash
-# Local-only (default — no setup needed)
-# BRIDGE_DATA_DIR=C:\Users\YourName\Bridge
+# Local-only defaults (no setup needed — bridge picks the right path per platform)
+# macOS:   ~/Library/Application Support/bridge
+# Linux:   ~/.local/share/bridge
+# Windows: ~/Bridge
 
-# Multi-device via Google Drive
+# macOS — multi-device via iCloud Drive
+# BRIDGE_DATA_DIR=~/Library/Mobile Documents/com~apple~CloudDocs/bridge
+
+# macOS — multi-device via Google Drive
+# BRIDGE_DATA_DIR=~/Library/CloudStorage/GoogleDrive-you@example.com/My Drive/bridge
+
+# Linux — multi-device via Dropbox
+# BRIDGE_DATA_DIR=~/Dropbox/bridge
+
+# Windows — multi-device via Google Drive
 # BRIDGE_DATA_DIR=G:\My Drive\bridge
-
-# Multi-device via OneDrive
-# BRIDGE_DATA_DIR=C:\Users\YourName\OneDrive\bridge
 ```
 
-A complete `.env` for a typical multi-device setup looks like:
+A complete `.env` for a typical multi-device macOS setup:
 
 ```bash
-# Storage on Google Drive so chat (phone, web) and Code (PC) share the same folder
-BRIDGE_DATA_DIR=G:\My Drive\bridge
+# Storage on iCloud so chat (phone, web) and Code (Mac) share the same folder
+BRIDGE_DATA_DIR=~/Library/Mobile Documents/com~apple~CloudDocs/bridge
 
 # Two projects that bridge_review will read files for
-BRIDGE_PROJECT_PATHS={"bridge":"C:\\Users\\YourName\\Documents\\bridge","my-app":"C:\\Users\\YourName\\Documents\\my-app"}
+BRIDGE_PROJECT_PATHS={"bridge":"/Users/yourname/Documents/bridge","my-app":"/Users/yourname/Documents/my-app"}
 
 # Defaults for the rest
 BRIDGE_PORT=7777
@@ -166,8 +178,25 @@ Two options. Pick whichever fits your setup.
 
 **Option A — local stdio (no Tailscale needed if Code runs on the same PC as bridge).**
 
-Add a `bridge` entry to your Claude Code MCP config. The config lives at `~/.claude/claude.json` (Windows: `%USERPROFILE%\.claude\claude.json`).
+Add a `bridge` entry to your Claude Code MCP config. The config lives at `~/.claude/claude.json`.
 
+macOS / Linux:
+```jsonc
+{
+  "mcpServers": {
+    "bridge": {
+      "command": "npm",
+      "args": ["run", "bridge:stdio"],
+      "cwd": "/Users/yourname/Documents/bridge",
+      "env": {
+        "BRIDGE_PROJECT_ROOT": "/Users/yourname/Documents/YourProject"
+      }
+    }
+  }
+}
+```
+
+Windows (`%USERPROFILE%\.claude\claude.json`):
 ```jsonc
 {
   "mcpServers": {
@@ -292,6 +321,11 @@ To install:
 2. **Copy the skill folder** from this repo into that directory:
 
    ```bash
+   # macOS / Linux (from the bridge repo root)
+   cp -r claude-skill/bridge ~/.claude/skills/bridge
+   ```
+
+   ```powershell
    # Windows (from the bridge repo root)
    xcopy /E /I claude-skill\bridge "%USERPROFILE%\.claude\skills\bridge"
    ```
@@ -342,6 +376,14 @@ To confirm the skill is loaded, start a Claude Code session in any project and a
 
 **Cause:** Another process (an orphan bridge instance, another local service, or a previous shell that you forgot about) is bound to port 7777.
 
+**Fix on macOS / Linux:**
+```bash
+# Find the PID
+lsof -i :7777
+# Kill it (replace 12345 with the PID from lsof output)
+kill -9 12345
+```
+
 **Fix on Windows:**
 ```powershell
 # Find the PID
@@ -349,6 +391,7 @@ netstat -ano | findstr :7777
 # Kill it (replace 12345 with the PID from above)
 Stop-Process -Id 12345 -Force
 ```
+
 Then run `npm start` again. If you'd rather change ports, set `BRIDGE_PORT=7778` (or any free port) in your `.env`.
 
 ### `.env` values aren't being picked up
@@ -397,7 +440,7 @@ A: Yes — that's the point. The files are plain markdown with YAML frontmatter,
 
 These are directions, not promises:
 
-- **Mac and Linux support.** Currently Windows-focused; cross-platform contributions are the highest-value area — see [CONTRIBUTING.md](./CONTRIBUTING.md).
+- **Mac and Linux support.** Core path defaults are now cross-platform; contributions for platform-specific packaging or autostart are welcome.
 - **Brief and result archival.** Auto-clean old `done/` and `results/` files after a configurable retention period.
 - **Per-project skill auto-install.** Make `npm start` notice when it's running in a project that doesn't have the bridge skill installed and prompt to install it.
 
